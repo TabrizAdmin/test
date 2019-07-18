@@ -1,99 +1,99 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+@extends('layouts.app')
 
-        <title>Laravel</title>
-
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
-
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Nunito', sans-serif;
-                font-weight: 200;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 13px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endauth
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Form</strong>
                 </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="product_name">Product name</label>
+                                <input type="text" class="form-control" id="product_name" placeholder="Enter Product name">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="quantity">Quantity in stock</label>
+                                <input type="number" class="form-control" id="quantity" placeholder="Enter Quantity">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="price">Price per item</label>
+                                <input type="number" class="form-control" id="price" placeholder="Enter Price">
+                            </div>
+                        </div>
+                    </div>
+                    <!--/.row-->
                 </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Docs</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://blog.laravel.com">Blog</a>
-                    <a href="https://nova.laravel.com">Nova</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                <div class="card-footer">
+                    <button type="button" id="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div><br>
+            <div class="card">
+                <div class="card-header">
+                    <strong>Submitted data</strong>
+                </div>
+                <div class="card-body" id="jquery_row">
+                    <div class="row" id="row_inner">
+                        <table class="table table-bordered table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Product Name</th>
+                                    <th class="text-center">Quantity in stuck</th>
+                                    <th class="text-center">Price per item</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="text-center">Pompeius René</td>
+                                    <td class="text-center">2012/01/01</td>
+                                    <td class="text-center">Member</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </body>
-</html>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $(document).on('click', '#submit', function(e) {
+            e.preventDefault();
+            var product_name = $("#product_name").val();
+            var quantity = $("#quantity").val();
+            var price = $("#price").val();
+            var _token = "{{ csrf_token() }}";
+            var form;
+            var formData = new FormData(form);
+            formData.append('product_name', product_name);
+            formData.append('quantity', quantity);
+            formData.append('price', price);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': _token
+                },
+                url:'{{ route('get.form') }}',
+                type:'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(data)
+                {
+                    $("#jquery_row").load("{{ route('home') }} #row_inner");
+                }
+            });
+        });
+    });
+</script>
+@endsection
