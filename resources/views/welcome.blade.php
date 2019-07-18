@@ -39,22 +39,28 @@
                 <div class="card-header">
                     <strong>Submitted data</strong>
                 </div>
-                <div class="card-body" id="jquery_row">
-                    <div class="row" id="row_inner">
-                        <table class="table table-bordered table-striped table-sm">
+                <div class="card-body">
+                    <div class="row" id="jquery_row">
+                        <table class="table table-bordered table-striped table-sm" id="table">
                             <thead>
                                 <tr>
                                     <th class="text-center">Product Name</th>
                                     <th class="text-center">Quantity in stuck</th>
                                     <th class="text-center">Price per item</th>
+                                    <th class="text-center">Datetime submitted</th>
+                                    <th class="text-center">Total value number</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td class="text-center">Pompeius René</td>
-                                    <td class="text-center">2012/01/01</td>
-                                    <td class="text-center">Member</td>
-                                </tr>
+                                @foreach ($products as $product)
+                                    <tr>
+                                        <td class="text-center">{{ $product->product_name }}</td>
+                                        <td class="text-center">{{ $product->quantity }}</td>
+                                        <td class="text-center">{{ $product->price }}</td>
+                                        <td class="text-center">{{ $product->created_at }}</td>
+                                        <td class="text-center">{{ $product->quantity * $product->price }}</td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -64,6 +70,10 @@
     </div>
 </div>
 
+@endsection
+
+@section('script')
+<script src="{{ url('js/jquery-3.4.1.min.js') }}"></script>
 <script>
     $(document).ready(function(){
         $(document).on('click', '#submit', function(e) {
@@ -90,7 +100,7 @@
                 contentType: false,
                 success: function(data)
                 {
-                    $("#jquery_row").load("{{ route('home') }} #row_inner");
+                    $("#jquery_row").load("{{ route('index') }} #table");
                 }
             });
         });

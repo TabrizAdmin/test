@@ -11,11 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ProductController@index')->name('index');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/get-form', 'HomeController@getForm')->name('get.form');
+Route::post('/get-form', 'ProductController@getForm')->name('get.form');
